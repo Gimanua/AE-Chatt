@@ -10,21 +10,11 @@ using System.Windows.Forms;
 
 namespace AE_Chatt
 {
-    public partial class LoginForm : Form
+    public partial class ChatForm : Form
     {
-        public LoginForm()
+        public ChatForm()
         {
             InitializeComponent();
-        }
-
-        private void labelPassWord_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBoxUserName_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

@@ -31,9 +31,11 @@
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Göran");
             System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Pelle");
             this.textBoxMessage = new System.Windows.Forms.TextBox();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.listViewOthers = new System.Windows.Forms.ListView();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.tabControlConversations = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabControlConversations.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBoxMessage
@@ -44,17 +46,24 @@
             this.textBoxMessage.Size = new System.Drawing.Size(649, 74);
             this.textBoxMessage.TabIndex = 0;
             // 
-            // listView1
+            // listViewOthers
             // 
-            this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            this.listViewOthers.CheckBoxes = true;
+            listViewItem1.StateImageIndex = 0;
+            listViewItem2.StateImageIndex = 0;
+            this.listViewOthers.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1,
             listViewItem2});
-            this.listView1.Location = new System.Drawing.Point(12, 58);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(121, 380);
-            this.listView1.TabIndex = 1;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.List;
+            this.listViewOthers.Location = new System.Drawing.Point(12, 58);
+            this.listViewOthers.MultiSelect = false;
+            this.listViewOthers.Name = "listViewOthers";
+            this.listViewOthers.Size = new System.Drawing.Size(121, 380);
+            this.listViewOthers.TabIndex = 1;
+            this.listViewOthers.UseCompatibleStateImageBehavior = false;
+            this.listViewOthers.View = System.Windows.Forms.View.List;
+            this.listViewOthers.ItemActivate += new System.EventHandler(this.listView1_ItemActivate);
+            this.listViewOthers.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listView1_ItemChecked_1);
+            this.listViewOthers.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listViewOthers_ItemSelectionChanged);
             // 
             // textBox1
             // 
@@ -67,26 +76,37 @@
             this.textBox1.Text = "Server Status";
             this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // textBox2
+            // tabControlConversations
             // 
-            this.textBox2.Location = new System.Drawing.Point(139, 58);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(649, 300);
-            this.textBox2.TabIndex = 3;
+            this.tabControlConversations.Controls.Add(this.tabPage1);
+            this.tabControlConversations.Location = new System.Drawing.Point(139, 12);
+            this.tabControlConversations.Name = "tabControlConversations";
+            this.tabControlConversations.SelectedIndex = 0;
+            this.tabControlConversations.Size = new System.Drawing.Size(649, 346);
+            this.tabControlConversations.TabIndex = 4;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(641, 320);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Conversation";
+            this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // ChatForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.tabControlConversations);
             this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.listViewOthers);
             this.Controls.Add(this.textBoxMessage);
             this.Name = "ChatForm";
             this.Text = "ChatForm";
+            this.tabControlConversations.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -95,8 +115,9 @@
         #endregion
 
         private System.Windows.Forms.TextBox textBoxMessage;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView listViewOthers;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TabControl tabControlConversations;
+        private System.Windows.Forms.TabPage tabPage1;
     }
 }

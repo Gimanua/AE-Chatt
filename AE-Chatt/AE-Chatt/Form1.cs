@@ -12,9 +12,13 @@ namespace AE_Chatt
 {
     public partial class LoginForm : Form
     {
+        private ChatForm chatForm = new ChatForm();
+        
+
         public LoginForm()
         {
             InitializeComponent();
+            chatForm.FormClosed += HandleChatClose;
         }
 
         private void labelPassWord_Click(object sender, EventArgs e)
@@ -24,7 +28,19 @@ namespace AE_Chatt
 
         private void textBoxUserName_TextChanged(object sender, EventArgs e)
         {
+            
+        }
 
+        private void HandleChatClose(object sender, EventArgs e)
+        {
+            Close();
+        }
+        
+
+        private void buttonLogIn_Click(object sender, EventArgs e)
+        {
+            chatForm.Show();
+            Hide();
         }
     }
 }

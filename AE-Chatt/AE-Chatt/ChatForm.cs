@@ -33,6 +33,7 @@ namespace AE_Chatt
             {
                 TabPage tabPage = new TabPage(e.Item.Text);
                 tabPage.Name = e.Item.Text;
+                TextBox textBoxTab = new TextBox() { Location = new Point(3,3), Size = new Size(635,314), ReadOnly = true};
                 tabControlConversations.TabPages.Add(tabPage);
                 tabControlConversations.SelectedTab = tabControlConversations.TabPages[tabControlConversations.TabCount - 1];
                 TextBox textBox = new TextBox();

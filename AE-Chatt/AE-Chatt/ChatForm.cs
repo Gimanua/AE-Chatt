@@ -12,36 +12,35 @@ namespace AE_Chatt
 {
     public partial class ChatForm : Form
     {
-        private List<TextBox> textBoxes = new List<TextBox>();
+        private List<TextBox> textBoxesRead = new List<TextBox>();
+        private List<TextBox> textBoxesSend = new List<TextBox>();
+        private TextBox currentSendTextBox;
+        private TextBox currentReadTextBox;
 
         public ChatForm()
         {
-            TextBox textBoxStandard = new TextBox();
-            AdjustTextBox(textBoxStandard);
-            textBoxStandard.ReadOnly = true;
-            textBoxStandard.Name = "standardIndex";
-            textBoxStandard.Text = "Här skriver du meddelanden";
-            textBoxes.Add(textBoxStandard);
+            TextBox textBoxStandard = new TextBox() { Location = new Point(139, 364), Multiline = true, Size = new Size(649, 74), TabStop = false, ReadOnly = true, Text = "Här skriver du meddelanden" };
             Controls.Add(textBoxStandard);
             InitializeComponent();
         }
         
-
         private void listView1_ItemChecked_1(object sender, ItemCheckedEventArgs e)
         {
             if (e.Item.Checked)
             {
-                TabPage tabPage = new TabPage(e.Item.Text);
-                tabPage.Name = e.Item.Text;
-                TextBox textBoxTab = new TextBox() { Location = new Point(3,3), Size = new Size(635,314), ReadOnly = true};
+                TabPage tabPage = new TabPage(e.Item.Text) { Name = e.Item.Text};
+                TextBox textBoxTab = new TextBox() { Location = new Point(3,3), Multiline = true, Size = new Size(635,314), ReadOnly = true, TabStop = false};
+                currentReadTextBox = textBoxTab;
+                textBoxesRead.Add(textBoxTab);
+                tabPage.Controls.Add(textBoxTab);
                 tabControlConversations.TabPages.Add(tabPage);
                 tabControlConversations.SelectedTab = tabControlConversations.TabPages[tabControlConversations.TabCount - 1];
-                TextBox textBox = new TextBox();
-                textBox.Name = e.Item.Text;
-                AdjustTextBox(textBox);
-                textBoxes.Add(textBox);
-                Controls.Add(textBox);
-                textBox.BringToFront();
+                TextBox textBoxSend = new TextBox() { Location = new Point(139, 364), Multiline = true, Size = new Size(649, 74), TabStop = false, MaxLength = 800, Name = e.Item.Text };
+                textBoxSend.KeyUp += (s, e2) => { if (!string.IsNullOrEmpty(currentSendTextBox.Text) && e2.KeyData == Keys.Enter) { currentReadTextBox.AppendText(currentSendTextBox.Text + "\n"); currentSendTextBox.Clear(); currentSendTextBox.Select(0, 0); } };
+                textBoxesSend.Add(textBoxSend);
+                Controls.Add(textBoxSend);
+                textBoxSend.BringToFront();
+                currentSendTextBox = textBoxSend;
             }
             else
             {
@@ -63,11 +62,11 @@ namespace AE_Chatt
                         break;
                     }
                 }
-                for(int i = 0; i < textBoxes.Count; i++)
+                for(int i = 0; i < textBoxesSend.Count; i++)
                 {
-                    if(textBoxes[i].Name == e.Item.Text)
+                    if(textBoxesSend[i].Name == e.Item.Text)
                     {
-                        textBoxes.RemoveAt(i);
+                        textBoxesSend.RemoveAt(i);
                         break;
                     }
                 }
@@ -86,18 +85,28 @@ namespace AE_Chatt
 
         private void tabControlConversations_Selected(object sender, TabControlEventArgs e)
         {
-            
-        }
-
-        private void tabControlConversations_Selecting(object sender, TabControlCancelEventArgs e)
-        {
             if (e.TabPage == null)
                 return;
 
-            foreach (TextBox textBox in textBoxes)
+            foreach(TextBox textBox in textBoxesRead)
+            {
+                if(textBox.Name == e.TabPage.Name)
+                {
+                    textBox.BringToFront();
+                    currentReadTextBox = textBox;
+                    break;
+                }
+            }
+
+            foreach (TextBox textBox in textBoxesSend)
             {
                 if (textBox.Name == e.TabPage.Name)
+                {
                     textBox.BringToFront();
+                    textBox.Select(0,0);
+                    currentSendTextBox = textBox;
+                    break;
+                }
             }
         }
     }

@@ -12,8 +12,6 @@ namespace AE_Chatt
 {
     public partial class ChatForm : Form
     {
-        private List<TextBox> textBoxesRead = new List<TextBox>();
-        private List<TextBox> textBoxesSend = new List<TextBox>();
         private TextBox currentSendTextBox;
         private TextBox currentReadTextBox;
 
@@ -28,16 +26,14 @@ namespace AE_Chatt
         {
             if (e.Item.Checked)
             {
-                TabPage tabPage = new TabPage(e.Item.Text) { Name = e.Item.Text};
+                TabPage tabPage = new TabPage(e.Item.Text) { Name = e.Item.Text };
                 TextBox textBoxTab = new TextBox() { Location = new Point(3,3), Multiline = true, Size = new Size(635,314), ReadOnly = true, TabStop = false};
                 currentReadTextBox = textBoxTab;
-                textBoxesRead.Add(textBoxTab);
                 tabPage.Controls.Add(textBoxTab);
                 tabControlConversations.TabPages.Add(tabPage);
                 tabControlConversations.SelectedTab = tabControlConversations.TabPages[tabControlConversations.TabCount - 1];
                 TextBox textBoxSend = new TextBox() { Location = new Point(139, 364), Multiline = true, Size = new Size(649, 74), TabStop = false, MaxLength = 800, Name = e.Item.Text };
                 textBoxSend.KeyUp += (s, e2) => { if (!string.IsNullOrEmpty(currentSendTextBox.Text) && e2.KeyData == Keys.Enter) { currentReadTextBox.AppendText(currentSendTextBox.Text + "\n"); currentSendTextBox.Clear(); currentSendTextBox.Select(0, 0); } };
-                textBoxesSend.Add(textBoxSend);
                 Controls.Add(textBoxSend);
                 textBoxSend.BringToFront();
                 currentSendTextBox = textBoxSend;
@@ -53,22 +49,19 @@ namespace AE_Chatt
                         break;
                     }
                 }
-                //Ta bort textboxen
-                for(int i = 0; i < Controls.Count; i++)
+                foreach(TextBox textBox in Controls.OfType<TextBox>())//Går inte in i textBoxes som ligger under tabs, då de blir nestade under en annan control
                 {
-                    if(Controls[i].Name == e.Item.Text)
+                    if(textBox.Name == e.Item.Text)
                     {
-                        Controls.RemoveAt(i);
+                        Controls.Remove(textBox);
                         break;
                     }
                 }
-                for(int i = 0; i < textBoxesSend.Count; i++)
+                //NÅGOT ÄR FEL MED NÄR MAN TAR BORT EN TAB, MAN BYTE INTE TILL VEM MAN SKRIVER
+                foreach(TextBox textBox in tabControlConversations.SelectedTab.Controls.OfType<TextBox>())
                 {
-                    if(textBoxesSend[i].Name == e.Item.Text)
-                    {
-                        textBoxesSend.RemoveAt(i);
-                        break;
-                    }
+                    currentSendTextBox = textBox;
+                    break;
                 }
             }
         }
@@ -88,7 +81,7 @@ namespace AE_Chatt
             if (e.TabPage == null)
                 return;
 
-            foreach(TextBox textBox in textBoxesRead)
+            foreach(TextBox textBox in tabControlConversations.Controls.OfType<TextBox>())
             {
                 if(textBox.Name == e.TabPage.Name)
                 {
@@ -98,7 +91,7 @@ namespace AE_Chatt
                 }
             }
 
-            foreach (TextBox textBox in textBoxesSend)
+            foreach (TextBox textBox in Controls.OfType<TextBox>())
             {
                 if (textBox.Name == e.TabPage.Name)
                 {

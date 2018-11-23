@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("Göran");
-            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("Pelle");
+            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("Göran");
+            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("Pelle");
             this.listViewOthers = new System.Windows.Forms.ListView();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.tabControlConversations = new System.Windows.Forms.TabControl();
@@ -38,11 +38,11 @@
             // listViewOthers
             // 
             this.listViewOthers.CheckBoxes = true;
-            listViewItem9.StateImageIndex = 0;
-            listViewItem10.StateImageIndex = 0;
+            listViewItem5.StateImageIndex = 0;
+            listViewItem6.StateImageIndex = 0;
             this.listViewOthers.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem9,
-            listViewItem10});
+            listViewItem5,
+            listViewItem6});
             this.listViewOthers.Location = new System.Drawing.Point(12, 58);
             this.listViewOthers.MultiSelect = false;
             this.listViewOthers.Name = "listViewOthers";
@@ -68,7 +68,7 @@
             this.tabControlConversations.Location = new System.Drawing.Point(139, 12);
             this.tabControlConversations.Name = "tabControlConversations";
             this.tabControlConversations.SelectedIndex = 0;
-            this.tabControlConversations.Size = new System.Drawing.Size(649, 346);
+            this.tabControlConversations.Size = new System.Drawing.Size(649, 426);
             this.tabControlConversations.TabIndex = 4;
             this.tabControlConversations.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControlConversations_Selected);
             // 

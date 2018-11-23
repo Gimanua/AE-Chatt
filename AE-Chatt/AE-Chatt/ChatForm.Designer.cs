@@ -31,7 +31,7 @@
             System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("Göran");
             System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("Pelle");
             this.listViewOthers = new System.Windows.Forms.ListView();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBoxServerStatus = new System.Windows.Forms.TextBox();
             this.tabControlConversations = new System.Windows.Forms.TabControl();
             this.SuspendLayout();
             // 
@@ -50,18 +50,19 @@
             this.listViewOthers.TabIndex = 1;
             this.listViewOthers.UseCompatibleStateImageBehavior = false;
             this.listViewOthers.View = System.Windows.Forms.View.List;
-            this.listViewOthers.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listView1_ItemChecked_1);
+            this.listViewOthers.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.ListView1_ItemChecked);
             // 
-            // textBox1
+            // textBoxServerStatus
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 12);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(121, 40);
-            this.textBox1.TabIndex = 2;
-            this.textBox1.Text = "Server Status";
-            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBoxServerStatus.BackColor = System.Drawing.Color.DarkRed;
+            this.textBoxServerStatus.Location = new System.Drawing.Point(12, 12);
+            this.textBoxServerStatus.Multiline = true;
+            this.textBoxServerStatus.Name = "textBoxServerStatus";
+            this.textBoxServerStatus.ReadOnly = true;
+            this.textBoxServerStatus.Size = new System.Drawing.Size(121, 40);
+            this.textBoxServerStatus.TabIndex = 2;
+            this.textBoxServerStatus.Text = "Disconnected";
+            this.textBoxServerStatus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tabControlConversations
             // 
@@ -70,7 +71,7 @@
             this.tabControlConversations.SelectedIndex = 0;
             this.tabControlConversations.Size = new System.Drawing.Size(649, 426);
             this.tabControlConversations.TabIndex = 4;
-            this.tabControlConversations.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControlConversations_Selected);
+            this.tabControlConversations.Selected += new System.Windows.Forms.TabControlEventHandler(this.TabControlConversations_Selected);
             // 
             // ChatForm
             // 
@@ -78,7 +79,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.tabControlConversations);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.textBoxServerStatus);
             this.Controls.Add(this.listViewOthers);
             this.Name = "ChatForm";
             this.Text = "ChatForm";
@@ -89,7 +90,7 @@
 
         #endregion
         private System.Windows.Forms.ListView listViewOthers;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBoxServerStatus;
         private System.Windows.Forms.TabControl tabControlConversations;
     }
 }

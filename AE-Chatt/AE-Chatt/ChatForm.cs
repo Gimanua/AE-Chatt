@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace AE_Chatt
+﻿namespace AE_Chatt
 {
+    using System.Drawing;
+    using System.Windows.Forms;
+    using System.Linq;
+
     public partial class ChatForm : Form
     {
         private TextBox currentSendTextBox;
@@ -20,22 +14,21 @@ namespace AE_Chatt
             InitializeComponent();
         }
         
-        private void listView1_ItemChecked_1(object sender, ItemCheckedEventArgs e)
+        private void ListView1_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
             if (e.Item.Checked)
             {
                 TabPage tabPage = new TabPage(e.Item.Text);
-                TextBox textBoxRead = new TextBox() { Location = new Point(3,3), Multiline = true, Size = new Size(635,314), ReadOnly = true, TabStop = false};
+
+                TextBox textBoxRead = new TextBox() { Location = new Point(3, 3), Multiline = true, Size = new Size(635, 314), ReadOnly = true, TabStop = false, Name = "read", ScrollBars = ScrollBars.Vertical};
                 tabPage.Controls.Add(textBoxRead);
-                
-                TextBox textBoxSend = new TextBox() { Location = new Point(0, 320), Multiline = true, Size = new Size(641, 80), TabStop = false, MaxLength = 800 };
-                textBoxSend.KeyUp += (s, e2) => { if (!string.IsNullOrEmpty(currentSendTextBox.Text) && e2.KeyData == Keys.Enter) { currentReadTextBox.AppendText(currentSendTextBox.Text + "\n"); currentSendTextBox.Clear(); currentSendTextBox.Select(0, 0); } };
+
+                TextBox textBoxSend = new TextBox() { Location = new Point(0, 320), Multiline = true, Size = new Size(641, 80), TabStop = false, MaxLength = 800, Name = "send"};
+                textBoxSend.KeyDown += TextBoxSend_KeyDown;
                 tabPage.Controls.Add(textBoxSend);
 
                 tabControlConversations.TabPages.Add(tabPage);
                 tabControlConversations.SelectedTab = tabControlConversations.TabPages[tabControlConversations.TabCount - 1];
-
-                tabPage.BringToFront();
 
                 currentReadTextBox = textBoxRead;
                 currentSendTextBox = textBoxSend;
@@ -43,23 +36,44 @@ namespace AE_Chatt
             else
             {
                 //Ta bort taben
-                for (int i = 0; i < tabControlConversations.TabPages.Count; i++)
+                foreach(TabPage tabPage in tabControlConversations.TabPages)
                 {
-                    if (tabControlConversations.TabPages[i].Text == e.Item.Text)
+                    if(tabPage.Text == e.Item.Text)
                     {
-                        tabControlConversations.TabPages.RemoveAt(i-1);
+                        tabControlConversations.TabPages.Remove(tabPage);
                         break;
                     }
                 }
             }
         }
 
-        private void tabControlConversations_Selected(object sender, TabControlEventArgs e)
+        private void TabControlConversations_Selected(object sender, TabControlEventArgs e)
         {
-            if (e.TabPage == null)
-                return;
-            else
+            if (e.TabPage != null)
+            {
                 e.TabPage.BringToFront();
+                foreach (TextBox textBox in e.TabPage.Controls.OfType<TextBox>())
+                {
+                    if (textBox.Name == "send")
+                        currentSendTextBox = textBox;
+                    else if (textBox.Name == "read")
+                        currentReadTextBox = textBox;
+                }
+            }
+        }
+
+        private void TextBoxSend_KeyDown(object o, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                if (!string.IsNullOrWhiteSpace(currentSendTextBox.Text))
+                {
+                    currentReadTextBox.AppendText(currentSendTextBox.Text + "\n");
+                    currentSendTextBox.Clear();
+                    currentSendTextBox.Select(0, 0);
+                }
+            }
         }
     }
 }

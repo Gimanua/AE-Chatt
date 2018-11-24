@@ -20,15 +20,15 @@
             {
                 TabPage tabPage = new TabPage(e.Item.Text);
 
-                TextBox textBoxRead = new TextBox() { Location = new Point(3, 3), Multiline = true, Size = new Size(635, 314), ReadOnly = true, TabStop = false, Name = "read", ScrollBars = ScrollBars.Vertical};
+                TextBox textBoxRead = new TextBox() { Location = new Point(3, 3), Multiline = true, Size = new Size(635, 314), ReadOnly = true, TabStop = false, Name = "read", ScrollBars = ScrollBars.Vertical, Dock = DockStyle.Fill };
                 tabPage.Controls.Add(textBoxRead);
 
-                TextBox textBoxSend = new TextBox() { Location = new Point(0, 320), Multiline = true, Size = new Size(641, 80), TabStop = false, MaxLength = 800, Name = "send"};
+                TextBox textBoxSend = new TextBox() { Location = new Point(3, 320), Multiline = true, Size = new Size(635, 80), TabStop = false, MaxLength = 800, Name = "send", Dock = DockStyle.Bottom };
                 textBoxSend.KeyDown += TextBoxSend_KeyDown;
                 tabPage.Controls.Add(textBoxSend);
 
                 tabControlConversations.TabPages.Add(tabPage);
-                tabControlConversations.SelectedTab = tabControlConversations.TabPages[tabControlConversations.TabCount - 1];
+                tabControlConversations.SelectedTab = tabPage;
 
                 currentReadTextBox = textBoxRead;
                 currentSendTextBox = textBoxSend;

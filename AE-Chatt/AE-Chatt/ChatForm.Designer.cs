@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("Göran");
-            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("Pelle");
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Göran");
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Pelle");
             this.listViewOthers = new System.Windows.Forms.ListView();
             this.textBoxServerStatus = new System.Windows.Forms.TextBox();
             this.tabControlConversations = new System.Windows.Forms.TabControl();
@@ -37,16 +37,19 @@
             // 
             // listViewOthers
             // 
+            this.listViewOthers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.listViewOthers.CheckBoxes = true;
-            listViewItem5.StateImageIndex = 0;
-            listViewItem6.StateImageIndex = 0;
+            listViewItem1.StateImageIndex = 0;
+            listViewItem2.StateImageIndex = 0;
             this.listViewOthers.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem5,
-            listViewItem6});
+            listViewItem1,
+            listViewItem2});
             this.listViewOthers.Location = new System.Drawing.Point(12, 58);
             this.listViewOthers.MultiSelect = false;
             this.listViewOthers.Name = "listViewOthers";
             this.listViewOthers.Size = new System.Drawing.Size(121, 380);
+            this.listViewOthers.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listViewOthers.TabIndex = 1;
             this.listViewOthers.UseCompatibleStateImageBehavior = false;
             this.listViewOthers.View = System.Windows.Forms.View.List;
@@ -66,6 +69,9 @@
             // 
             // tabControlConversations
             // 
+            this.tabControlConversations.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControlConversations.Location = new System.Drawing.Point(139, 12);
             this.tabControlConversations.Name = "tabControlConversations";
             this.tabControlConversations.SelectedIndex = 0;
@@ -82,7 +88,7 @@
             this.Controls.Add(this.textBoxServerStatus);
             this.Controls.Add(this.listViewOthers);
             this.Name = "ChatForm";
-            this.Text = "ChatForm";
+            this.Text = "AE Chatt";
             this.ResumeLayout(false);
             this.PerformLayout();
 

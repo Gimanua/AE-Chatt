@@ -42,5 +42,15 @@ namespace AE_Chatt
             chatForm.Show();
             Hide();
         }
+
+        private void labelUserName_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxPassWord_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

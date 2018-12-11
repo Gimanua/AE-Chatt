@@ -50,14 +50,25 @@ namespace AE_Chatt
 
                 // client.UploadValues returns page's source as byte array (byte[])
                 // so it must be transformed into a string
-                try
+                do
                 {
-                    string pagesource = Encoding.UTF8.GetString(client.UploadValues(serverAddress, postData));
-                }
-                catch (Exception ex)
-                {
+                    try
+                    {
+                        string pagesource = Encoding.UTF8.GetString(client.UploadValues(serverAddress, postData));
+                    }
+                    catch (Exception ex)
+                    {
+                        error = true;
+                        DialogResult result = MessageBox.Show(ex.Message, "Server status", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
 
+                        if (result == DialogResult.Retry)
+                            continue;
+                        else
+                            break;
+                    }
                 }
+                while(error);
+                
             }
         }
 
@@ -91,7 +102,7 @@ namespace AE_Chatt
                     catch (Exception ex)
                     {
                         error = true;
-                        DialogResult result = MessageBox.Show("Anslutningen till servern misslyckades", "Server status", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                        DialogResult result = MessageBox.Show(ex.Message, "Server status", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
 
                         if (result == DialogResult.Retry)
                             continue;

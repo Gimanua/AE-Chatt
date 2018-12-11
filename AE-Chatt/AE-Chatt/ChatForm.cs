@@ -3,6 +3,9 @@
     using System.Drawing;
     using System.Windows.Forms;
     using System.Linq;
+    using System.Net;
+    using System.Collections.Specialized;
+    using System.Text;
 
     public partial class ChatForm : Form
     {
@@ -69,10 +72,31 @@
                 e.SuppressKeyPress = true;
                 if (!string.IsNullOrWhiteSpace(currentSendTextBox.Text))
                 {
+                    CommitMessage(currentSendTextBox.Text, tabControlConversations.SelectedTab.Text);
                     currentReadTextBox.AppendText(currentSendTextBox.Text + "\n");
                     currentSendTextBox.Clear();
                     currentSendTextBox.Select(0, 0);
                 }
+            }
+        }
+
+        private void CommitMessage(string message, string receiver)
+        {
+            string sender = "Adrian";
+            string address = "/test.php";
+
+            using (WebClient client = new WebClient())
+            {
+                NameValueCollection postData = new NameValueCollection()
+                {
+                    { "sender", sender },  //order: {"parameter name", "parameter value"}
+                    { "message", message },
+                    { "receiver", receiver}
+                };
+
+                // client.UploadValues returns page's source as byte array (byte[])
+                // so it must be transformed into a string
+                string pagesource = Encoding.UTF8.GetString(client.UploadValues(address, postData));
             }
         }
     }

@@ -1,120 +1,85 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net.Http;
 using System.Windows.Forms;
 
 namespace AE_Chatt
 {
     public partial class LoginForm : Form
     {
-        private ChatForm chatForm = new ChatForm();
-        private string serverAddress = "http://10.110.226.181/AEChatt/AE.php";
-        private bool error = false;
+        private ChatForm chatForm;
 
         public LoginForm()
         {
             InitializeComponent();
-            chatForm.FormClosed += HandleChatClose;
-        }
-
-        private void HandleChatClose(object sender, EventArgs e)
-        {
-            Close();
+            Configurator.Initialize();
+            chatForm = new ChatForm();
+            chatForm.FormClosed += (s, e) => { Close(); };
         }
         
-        private void ButtonRegister_Click(object sender, EventArgs e)
+        private async void ButtonRegister_Click(object sender, EventArgs e)
         {
-            if (!ValidInput())
+            if (!ValidInput() || ServerCommunicator.Communicating)
                 return;
 
-            string connectionType = "register";
-
-            using (WebClient client = new WebClient())
+            ServerCommunicator.Communicating = true;
+            bool error = false;
+            do
             {
-                NameValueCollection postData = new NameValueCollection()
+                try
                 {
-                    { "username", textBoxUserName.Text },  //order: {"parameter name", "parameter value"}
-                    { "password", textBoxPassWord.Text },
-                    { "connectionType", connectionType }
-                };
-
-                // client.UploadValues returns page's source as byte array (byte[])
-                // so it must be transformed into a string
-                do
-                {
-                    try
-                    {
-                        string pagesource = Encoding.UTF8.GetString(client.UploadValues(serverAddress, postData));
-                        MessageBox.Show(pagesource, "Server response", MessageBoxButtons.OK);
-                    }
-                    catch (Exception ex)
-                    {
-                        error = true;
-                        DialogResult result = MessageBox.Show(ex.Message, "Server status", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-
-                        if (result == DialogResult.Retry)
-                            continue;
-                        else
-                            break;
-                    }
+                    await ServerCommunicator.Register(textBoxUserName.Text, textBoxPassWord.Text);
+                    break;
                 }
-                while(error);
-                
-            }
+                catch(HttpRequestException ex)
+                {
+                    error = true;
+                    DialogResult result = MessageBox.Show(ex.Message, "Fel", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+                    if (result != DialogResult.Retry)
+                        break;
+                }
+                catch(ArgumentNullException ex)
+                {
+                    MessageBox.Show(ex.Message, "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break;
+                }
+            } while (error);
+            ServerCommunicator.Communicating = false;
         }
 
-        private void ButtonLogIn_Click(object sender, EventArgs e)
+        private async void ButtonLogIn_Click(object sender, EventArgs e)
         {
-            if(!ValidInput())
+            if(!ValidInput() || ServerCommunicator.Communicating)
                 return;
 
-            string connectionType = "login";
-
-            using (WebClient client = new WebClient())
+            ServerCommunicator.Communicating = true;
+            bool error = false;
+            do
             {
-                NameValueCollection postData = new NameValueCollection()
+                try
                 {
-                    { "username", textBoxUserName.Text },  //order: {"parameter name", "parameter value"}
-                    { "password", textBoxPassWord.Text },
-                    { "intent", connectionType }
-                };
-
-                // client.UploadValues returns page's source as byte array (byte[])
-                // so it must be transformed into a string
-                do
+                    if (await ServerCommunicator.Login(textBoxUserName.Text, textBoxPassWord.Text))
+                    {
+                        chatForm.Show();
+                        Hide();
+                    }
+                    break;
+                }
+                catch(HttpRequestException ex)
                 {
-                    try
-                    {
-                        string pagesource = Encoding.UTF8.GetString(client.UploadValues(serverAddress, postData));
-                        MessageBox.Show(pagesource, "Server response", MessageBoxButtons.OK);
-                    }
-                    catch (Exception ex)
-                    {
-                        error = true;
-                        DialogResult result = MessageBox.Show(ex.Message, "Server status", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-
-                        if (result == DialogResult.Retry)
-                            continue;
-                        else
-                            break;
-                    }
-                } while (error);
-
-            }
-
-            chatForm.Show();
-            Hide();
+                    error = true;
+                    DialogResult result = MessageBox.Show(ex.Message, "Fel", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+                    if (result != DialogResult.Retry)
+                        break;
+                }
+                catch(ArgumentNullException ex)
+                {
+                    MessageBox.Show(ex.Message, "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break;
+                }
+            } while (error);
+            ServerCommunicator.Communicating = false;
         }
-
         
-
         private bool ValidInput()
         {
             if (string.IsNullOrWhiteSpace(textBoxUserName.Text) || string.IsNullOrWhiteSpace(textBoxPassWord.Text))

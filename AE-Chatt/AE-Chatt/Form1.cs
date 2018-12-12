@@ -83,7 +83,7 @@ namespace AE_Chatt
                 {
                     { "username", textBoxUserName.Text },  //order: {"parameter name", "parameter value"}
                     { "password", textBoxPassWord.Text },
-                    { "connectionType", connectionType }
+                    { "intent", connectionType }
                 };
 
                 // client.UploadValues returns page's source as byte array (byte[])
@@ -112,6 +112,8 @@ namespace AE_Chatt
             chatForm.Show();
             Hide();
         }
+
+        
 
         private bool ValidInput()
         {

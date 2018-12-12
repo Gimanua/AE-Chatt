@@ -6,13 +6,20 @@ namespace AE_Chatt
 {
     public partial class LoginForm : Form
     {
-        private ChatForm chatForm;
+        private ChatForm chatForm = new ChatForm();
 
         public LoginForm()
         {
             InitializeComponent();
-            Configurator.Initialize();
-            chatForm = new ChatForm();
+            try
+            {
+                Configurator.Initialize();
+            }
+            catch(Exception e)//Kolla varje exception och ge mer användarvänlig feedback
+            {
+                MessageBox.Show(e.Message, "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            
             chatForm.FormClosed += (s, e) => { Close(); };
         }
         
@@ -72,6 +79,11 @@ namespace AE_Chatt
                         break;
                 }
                 catch(ArgumentNullException ex)
+                {
+                    MessageBox.Show(ex.Message, "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break;
+                }
+                catch(InvalidOperationException ex)
                 {
                     MessageBox.Show(ex.Message, "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     break;

@@ -83,7 +83,7 @@
         private void CommitMessage(string message, string receiver)
         {
             string sender = "Adrian";
-            string address = "/test.php";
+            string address = "http://10.110.226.181/AEChatt/AE.php";
 
             using (WebClient client = new WebClient())
             {
@@ -97,6 +97,7 @@
                 // client.UploadValues returns page's source as byte array (byte[])
                 // so it must be transformed into a string
                 string pagesource = Encoding.UTF8.GetString(client.UploadValues(address, postData));
+                MessageBox.Show(pagesource, "Server response", MessageBoxButtons.OK);
             }
         }
     }

@@ -15,7 +15,7 @@ namespace AE_Chatt
     public partial class LoginForm : Form
     {
         private ChatForm chatForm = new ChatForm();
-        private string serverAddress = "http://10.110.227.69/test.php";
+        private string serverAddress = "http://10.110.226.181/AEChatt/AE.php";
         private bool error = false;
 
         public LoginForm()
@@ -31,11 +31,8 @@ namespace AE_Chatt
         
         private void ButtonRegister_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBoxUserName.Text) || string.IsNullOrWhiteSpace(textBoxPassWord.Text))
-            {
-                MessageBox.Show("Ogiltigt användarnamn och/eller lösenord. Dessa fält får inte vara tomma.", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            if (!ValidInput())
                 return;
-            }
 
             string connectionType = "register";
 
@@ -55,6 +52,7 @@ namespace AE_Chatt
                     try
                     {
                         string pagesource = Encoding.UTF8.GetString(client.UploadValues(serverAddress, postData));
+                        MessageBox.Show(pagesource, "Server response", MessageBoxButtons.OK);
                     }
                     catch (Exception ex)
                     {
@@ -74,11 +72,8 @@ namespace AE_Chatt
 
         private void ButtonLogIn_Click(object sender, EventArgs e)
         {
-            if(string.IsNullOrWhiteSpace(textBoxUserName.Text) || string.IsNullOrWhiteSpace(textBoxPassWord.Text))
-            {
-                MessageBox.Show("Ogiltigt användarnamn och/eller lösenord. Dessa fält får inte vara tomma.", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            if(!ValidInput())
                 return;
-            }
 
             string connectionType = "login";
 
@@ -98,6 +93,7 @@ namespace AE_Chatt
                     try
                     {
                         string pagesource = Encoding.UTF8.GetString(client.UploadValues(serverAddress, postData));
+                        MessageBox.Show(pagesource, "Server response", MessageBoxButtons.OK);
                     }
                     catch (Exception ex)
                     {
@@ -115,6 +111,16 @@ namespace AE_Chatt
 
             chatForm.Show();
             Hide();
+        }
+
+        private bool ValidInput()
+        {
+            if (string.IsNullOrWhiteSpace(textBoxUserName.Text) || string.IsNullOrWhiteSpace(textBoxPassWord.Text))
+            {
+                MessageBox.Show("Ogiltigt användarnamn och/eller lösenord. Dessa fält får inte vara tomma.", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return false;
+            }
+            return true;
         }
     }
 }

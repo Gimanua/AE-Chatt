@@ -3,9 +3,6 @@
     using System.Drawing;
     using System.Windows.Forms;
     using System.Linq;
-    using System.Net;
-    using System.Collections.Specialized;
-    using System.Text;
 
     public partial class ChatForm : Form
     {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace AE_Chatt
 {
@@ -15,8 +16,14 @@ namespace AE_Chatt
             {
                 Configurator.Initialize();
             }
-            catch(Exception e)//Kolla varje exception och ge mer användarvänlig feedback
+            catch(XmlException e)
             {
+                //config filen är korrupt
+                MessageBox.Show(e.Message, "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch(UriFormatException e)
+            {
+                //Ogiltig domän
                 MessageBox.Show(e.Message, "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             

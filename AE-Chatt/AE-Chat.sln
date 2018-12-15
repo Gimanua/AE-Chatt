@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.106
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AE-Chat", "AE-Chatt\AE-Chat.csproj", "{19E3D703-A1B2-469E-B305-BA9678D0545C}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Installer", "Installer\Installer.wixproj", "{9F0996CF-65CD-4DB1-B3C3-7E32DBB2551C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{19E3D703-A1B2-469E-B305-BA9678D0545C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{19E3D703-A1B2-469E-B305-BA9678D0545C}.Debug|x64.Build.0 = Debug|Any CPU
+		{19E3D703-A1B2-469E-B305-BA9678D0545C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{19E3D703-A1B2-469E-B305-BA9678D0545C}.Debug|x86.Build.0 = Debug|Any CPU
+		{19E3D703-A1B2-469E-B305-BA9678D0545C}.Release|x64.ActiveCfg = Release|Any CPU
+		{19E3D703-A1B2-469E-B305-BA9678D0545C}.Release|x64.Build.0 = Release|Any CPU
+		{19E3D703-A1B2-469E-B305-BA9678D0545C}.Release|x86.ActiveCfg = Release|Any CPU
+		{19E3D703-A1B2-469E-B305-BA9678D0545C}.Release|x86.Build.0 = Release|Any CPU
+		{9F0996CF-65CD-4DB1-B3C3-7E32DBB2551C}.Debug|x64.ActiveCfg = Debug|x64
+		{9F0996CF-65CD-4DB1-B3C3-7E32DBB2551C}.Debug|x86.ActiveCfg = Debug|x86
+		{9F0996CF-65CD-4DB1-B3C3-7E32DBB2551C}.Release|x64.ActiveCfg = Release|x86
+		{9F0996CF-65CD-4DB1-B3C3-7E32DBB2551C}.Release|x86.ActiveCfg = Release|x86
+		{9F0996CF-65CD-4DB1-B3C3-7E32DBB2551C}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E8A9756A-E56B-46CF-8220-42B1DB381AE8}
+	EndGlobalSection
+EndGlobal

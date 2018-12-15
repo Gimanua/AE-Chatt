@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+
+  <String Id="Manufacturer">AE</String>
+  <String Id="Description">A simple chat program</String>
+  <String Id="Keywords">chat,application,ae,dotnet,core,installer</String>
+  
+  <String Id="ProductName_x86">AE-Chat (32-bit)</String>
+  <String Id="ProductName_x64">AE-Chat (64-bit)</String>
+
+  <String Id="DowngradeErrorMessage">A newer version of AE-Chat is already installed.</String>
+
+  <String Id="LanguageLCID">1033</String>
+  
+</WixLocalization>

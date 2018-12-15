@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	
+	<!--https://youtu.be/6Yf-eDsRrnM?t=2317-->
   <!-- Give product a unique ID per platform -->
   <?if $(var.Platform)=x64?>
     <?define ProductCode = "{9FE6814E-A423-44FF-8AAE-6CE5666E5AB0}"?>
@@ -29,7 +29,7 @@
              Manufacturer="!(loc.Manufacturer)"
              Description="!(loc.Description)"
              Keywords="!(loc.Keywords)"
-             Languages="!(loc.Language)"
+             Languages="!(loc.LanguageLCID)"
              />
 
     <!-- Downgrade error message -->
@@ -45,6 +45,9 @@
 
     <!-- Use the icon.ico icon for this installer (shows up in Add/Remove programs) -->
     <Property Id="APPPRODUCTICON">icon.ico</Property>
+
+    <!-- Create a basic UI for the installer -->
+    <UIRef Id="WixUI_Minimal"/>
 
     <!-- Define components, shortcuts, files etc.. for installer -->
 		<Feature Id="ProductFeature" Title="AE-Chat" Level="1">

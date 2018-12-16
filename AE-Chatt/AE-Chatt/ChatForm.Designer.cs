@@ -53,7 +53,7 @@
             this.listViewOthers.TabIndex = 1;
             this.listViewOthers.UseCompatibleStateImageBehavior = false;
             this.listViewOthers.View = System.Windows.Forms.View.List;
-            this.listViewOthers.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.ListView1_ItemChecked);
+            this.listViewOthers.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.ListViewOthers_ItemChecked);
             // 
             // textBoxServerStatus
             // 

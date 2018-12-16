@@ -1,10 +1,10 @@
-﻿using System;
-using System.Net.Http;
-using System.Windows.Forms;
-using System.Xml;
-
-namespace AE_Chatt
+﻿namespace AE_Chatt
 {
+    using System;
+    using System.Net.Http;
+    using System.Windows.Forms;
+    using System.Xml;
+
     public partial class LoginForm : Form
     {
         private ChatForm chatForm = new ChatForm();

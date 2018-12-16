@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace AE_Chatt
+﻿namespace AE_Chatt
 {
+    using System.Collections.Generic;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+    using System.Windows.Forms;
+
     static class ServerCommunicator
     {
         private static readonly HttpClient client = new HttpClient();

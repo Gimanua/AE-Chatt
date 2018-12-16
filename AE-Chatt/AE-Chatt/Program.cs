@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace AE_Chatt
+﻿namespace AE_Chatt
 {
+    using System;
+    using System.Windows.Forms;
+
     static class Program
     {
         /// <summary>

@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Xml;
-
-namespace AE_Chatt
+﻿namespace AE_Chatt
 {
+    using System;
+    using System.IO;
+    using System.Xml;
+
     static class Configurator
     {
         public static Uri ServerDomain { get; set; }

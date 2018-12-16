@@ -8,20 +8,20 @@ namespace AE_Chatt
     {
         public static Uri ServerDomain { get; set; }
 
-        public static bool Initialize()
+        public static void Initialize()
         {
-            if (!File.Exists("connection.config"))
+            if (!File.Exists("configuration.config"))
             {
-                using(XmlWriter writer = XmlWriter.Create("connection.config"))
+                XmlWriterSettings settings = new XmlWriterSettings() { Indent = true, IndentChars = "\t"};
+                using (XmlWriter writer = XmlWriter.Create("configuration.config", settings))
                 {
                     writer.WriteStartElement("configuration");
                     writer.WriteElementString("server_domain", "http://10.110.226.181/AEChatt/AE.php");
                     writer.WriteEndElement();
-                    writer.Flush();
                 }
             }
 
-            using(XmlReader reader = XmlReader.Create("connection.config"))
+            using(XmlReader reader = XmlReader.Create("configuration.config"))
             {
                 while (reader.Read())
                 {
@@ -37,8 +37,6 @@ namespace AE_Chatt
                     }
                 }
             }
-
-            return true;
         }
     }
 }

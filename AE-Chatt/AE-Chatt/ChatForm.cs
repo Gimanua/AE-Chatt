@@ -70,6 +70,8 @@
                 e.SuppressKeyPress = true;
                 if (!string.IsNullOrWhiteSpace(currentSendTextBox.Text))
                 {
+                    //Write the messages to file
+                    currentReadTextBox.ForeColor = Color.Red;
                     currentReadTextBox.AppendText(currentSendTextBox.Text + "\n");
                     currentSendTextBox.Clear();
                     currentSendTextBox.Select(0, 0);

@@ -19,12 +19,16 @@ namespace AE_Chatt
             catch(XmlException e)
             {
                 //config filen är korrupt
-                MessageBox.Show(e.Message, "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DialogResult result = MessageBox.Show("\"configuration.config\" har ett ogiltigt format, vill du ha mer information?", "Fel", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                if (result == DialogResult.Yes)
+                    MessageBox.Show(e.Message, "Ytterligare information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch(UriFormatException e)
             {
                 //Ogiltig domän
-                MessageBox.Show(e.Message, "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DialogResult result = MessageBox.Show("Ogiltig domän, kontrollera domänen i \"configuration.config\". Vill du ha mer information?", "Fel", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                if (result == DialogResult.Yes)
+                    MessageBox.Show(e.Message, "Ytterligare information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             
             chatForm.FormClosed += (s, e) => { Close(); };
@@ -48,13 +52,8 @@ namespace AE_Chatt
                 {
                     error = true;
                     DialogResult result = MessageBox.Show(ex.Message, "Fel", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
-                    if (result != DialogResult.Retry)
+                    if (result == DialogResult.Cancel)
                         break;
-                }
-                catch(ArgumentNullException ex)
-                {
-                    MessageBox.Show(ex.Message, "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    break;
                 }
             } while (error);
             ServerCommunicator.Communicating = false;
@@ -82,18 +81,8 @@ namespace AE_Chatt
                 {
                     error = true;
                     DialogResult result = MessageBox.Show(ex.Message, "Fel", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
-                    if (result != DialogResult.Retry)
+                    if (result == DialogResult.Cancel)
                         break;
-                }
-                catch(ArgumentNullException ex)
-                {
-                    MessageBox.Show(ex.Message, "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    break;
-                }
-                catch(InvalidOperationException ex)
-                {
-                    MessageBox.Show(ex.Message, "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    break;
                 }
             } while (error);
             ServerCommunicator.Communicating = false;

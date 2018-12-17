@@ -45,14 +45,15 @@
             return false;
         }
 
-        public static async Task<bool> SendMessage(string message, string sender, string receiver)
+        public static async Task<bool> SendMessage(string sender, string receiver, string timestamp, string message)
         {
             Dictionary<string, string> postData = new Dictionary<string, string>
             {
                 { "intent", "sendMessage"},
-                { "message", message },
                 { "sender", sender },
-                { "receiver", receiver }
+                { "receiver", receiver },
+                { "timestamp", timestamp},
+                { "message", message }
             };
 
             string response = await ServerRequest(postData);

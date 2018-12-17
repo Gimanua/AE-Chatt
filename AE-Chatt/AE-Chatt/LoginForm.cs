@@ -32,6 +32,7 @@
             }
             
             chatForm.FormClosed += (s, e) => { Close(); };
+            chatForm.Show();
         }
         
         private async void ButtonRegister_Click(object sender, EventArgs e)

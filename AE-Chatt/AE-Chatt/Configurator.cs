@@ -20,6 +20,15 @@
                     writer.WriteEndElement();
                 }
             }
+            if (!File.Exists("pending_messages.xml"))
+            {
+                XmlWriterSettings settings = new XmlWriterSettings() { Indent = true, IndentChars = "\t" };
+                using (XmlWriter writer = XmlWriter.Create("pending_messages.xml", settings))
+                {
+                    writer.WriteStartElement("pending_messages");
+                    writer.WriteEndElement();
+                }
+            }
 
             using(XmlReader reader = XmlReader.Create("configuration.config"))
             {

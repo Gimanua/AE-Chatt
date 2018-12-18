@@ -73,52 +73,41 @@
                 e.SuppressKeyPress = true;
                 if (!string.IsNullOrWhiteSpace(currentSendTextBox.Text))
                 {
-                    string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                    int id = AppendPendingMessage(Username, tabControlConversations.SelectedTab.Text, timestamp, currentSendTextBox.Text);
+                    TimeSpan utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
+                    string timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss" + ((utcOffset < TimeSpan.Zero) ? "-" : "+") + utcOffset.ToString("hh") + ":" + utcOffset.ToString("mm"));
+                    AppendPendingMessage(Username, tabControlConversations.SelectedTab.Text, timestamp, currentSendTextBox.Text);
                     currentReadTextBox.AppendText(currentSendTextBox.Text + "\n");
                     currentSendTextBox.Clear();
                     currentSendTextBox.Select(0, 0);
                     if(await ServerCommunicator.SendMessage(Username, tabControlConversations.SelectedTab.Text, timestamp, currentSendTextBox.Text))
                     {
                         //Ta bort från pending_messages.xml
-                        RemovePendingMessage(id);
+                        RemovePendingMessage();
                     }
                 }
             }
         }
 
-        private int AppendPendingMessage(string sender, string receiver, string timestamp, string message)
+        private void AppendPendingMessage(string sender, string receiver, string timestamp, string message)
         {
             XDocument doc = XDocument.Load("pending_messages.xml");
-            int id = doc.Descendants("pending_message").Count() + 1;
             XElement msg = new XElement("pending_message");
-            msg.Add(new XAttribute("id", id));
             msg.Add(new XAttribute("sender", sender));
             msg.Add(new XAttribute("receiver", receiver));
             msg.Add(new XAttribute("timestamp", timestamp));
             msg.Value = message;
             doc.Element("pending_messages").Add(msg);
             doc.Save("pending_messages.xml");
-            return id;
         }
 
-        private void RemovePendingMessage(int id)
-        {
-            XmlDocument doc = new XmlDocument();
-            doc.Load("pending_messages.xml");
-            XmlNode node = doc.SelectSingleNode("/pending_messages/pending_message[@id=" + id + "]");
-            node.ParentNode.RemoveChild(node);
-            doc.Save("pending_messages.xml");
-        }
-
-        //Behöver fixas
-        private void UpdatePendingMessageIds()
+        private void RemovePendingMessage()
         {
             XmlDocument doc = new XmlDocument();
             doc.Load("pending_messages.xml");
             XmlNode messages = doc.SelectSingleNode("/pending_messages");
-            int count = messages.ChildNodes.Count;
-            
+            XmlNode childMessage = messages.FirstChild;
+            messages.RemoveChild(childMessage);
+            doc.Save("pending_messages.xml");
         }
     }
 }

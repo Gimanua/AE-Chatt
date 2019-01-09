@@ -36,6 +36,12 @@
 
                 currentReadTextBox = textBoxRead;
                 currentSendTextBox = textBoxSend;
+
+                //Från en dag tillbaks
+                TimeSpan utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
+                string sinceTime = DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-ddTHH:mm:ss" + ((utcOffset < TimeSpan.Zero) ? "-" : "+") + utcOffset.ToString("hh") + ":" + utcOffset.ToString("mm"));
+
+                LoadChatLog(e.Item.Text, sinceTime);
             }
             else
             {
@@ -108,6 +114,16 @@
             XmlNode childMessage = messages.FirstChild;
             messages.RemoveChild(childMessage);
             doc.Save("pending_messages.xml");
+        }
+
+        private async void LoadChatLog(string target, string sinceTime)
+        {
+            XmlDocument doc = await ServerCommunicator.GetChatLog(Username, target, sinceTime);
+            XmlNodeList list = doc.SelectNodes("/chatlog/message");
+            foreach(XmlNode node in list)
+            {
+                currentReadTextBox.AppendText(node.InnerText);
+            }
         }
     }
 }

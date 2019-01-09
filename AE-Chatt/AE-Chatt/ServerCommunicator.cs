@@ -4,6 +4,8 @@
     using System.Net.Http;
     using System.Threading.Tasks;
     using System.Windows.Forms;
+    using System.Xml;
+    using System.Xml.Linq;
 
     static class ServerCommunicator
     {
@@ -45,12 +47,12 @@
             return false;
         }
 
-        public static async Task<bool> SendMessage(string sender, string receiver, string timestamp, string message)
+        public static async Task<bool> SendMessage(string username, string receiver, string timestamp, string message)
         {
             Dictionary<string, string> postData = new Dictionary<string, string>
             {
                 { "intent", "sendMessage"},
-                { "sender", sender },
+                { "username", username },
                 { "receiver", receiver },
                 { "timestamp", timestamp},
                 { "message", message }
@@ -63,12 +65,38 @@
             return false;
         }
 
+        public static async Task<XmlDocument> GetChatLog(string username, string target, string sinceTime)
+        {
+            Dictionary<string, string> postData = new Dictionary<string, string>
+            {
+                { "intent", "getLog"},
+                { "username", username },
+                { "target", target},
+                { "sinceTime", sinceTime}
+            };
+
+            string response = await ServerRequest(postData);
+            try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(response);
+                return doc;
+            }
+            catch(XmlException e)
+            {
+                MessageBox.Show(e.Message, "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return null;
+        }
+
         private static async Task<string> ServerRequest(Dictionary<string,string> postData)
         {
             FormUrlEncodedContent content = new FormUrlEncodedContent(postData);
-            HttpResponseMessage response = await client.PostAsync(Configurator.ServerDomain, content);
+            HttpResponseMessage response = await client.PostAsync(Configurator.Address, content);
             string responseString = await response.Content.ReadAsStringAsync();
 
+            MessageBox.Show(responseString);
             return responseString;
         }
     }

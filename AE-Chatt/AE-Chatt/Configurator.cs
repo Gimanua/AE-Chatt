@@ -7,8 +7,9 @@
     static class Configurator
     {
         public static Uri Address { get; set; }
-        public static string ConfigPath { get; set; } = "configuration.config";
-        public static string PendingMessagesPath { get; set; } = "pending_messages.xml";
+        public static string ConfigPath { get; } = "configuration.config";
+        public static string PendingMessagesPath { get; } = "pending_messages.xml";
+        public static string ChatLogPath { get; } = "chat_log.xml";
 
         public static void Initialize()
         {
@@ -30,8 +31,17 @@
                     writer.WriteStartElement("pending_messages");
                     writer.WriteEndElement();
                 }
-                File.Encrypt(PendingMessagesPath);
-                File.SetAttributes(PendingMessagesPath, FileAttributes.Hidden | FileAttributes.ReadOnly | FileAttributes.Encrypted);
+                File.SetAttributes(PendingMessagesPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
+            }
+            if (!File.Exists(ChatLogPath))
+            {
+                XmlWriterSettings settings = new XmlWriterSettings() { Indent = true, IndentChars = "\t" };
+                using (XmlWriter writer = XmlWriter.Create(ChatLogPath, settings))
+                {
+                    writer.WriteStartElement("chat_log");
+                    writer.WriteEndElement();
+                }
+                File.SetAttributes(ChatLogPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
             }
 
             using (XmlReader reader = XmlReader.Create(ConfigPath))

@@ -65,6 +65,32 @@
             return false;
         }
 
+        public static async Task<XmlDocument> GetUsers(string username)
+        {
+            Dictionary<string, string> postData = new Dictionary<string, string>
+            {
+                { "intent", "getUsers"},
+                { "username", username }
+            };
+
+            try
+            {
+                string response = await ServerRequest(postData);
+                if (!string.IsNullOrWhiteSpace(response))
+                {
+                    XmlDocument doc = new XmlDocument();
+                    doc.LoadXml(response);
+                    return doc;
+                }
+            }
+            catch(XmlException e)
+            {
+                MessageBox.Show(e.Message, "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return null;
+        } 
+
         public static async Task<XmlDocument> GetChatLog(string username, string target, string sinceTime)
         {
             Dictionary<string, string> postData = new Dictionary<string, string>
@@ -74,13 +100,16 @@
                 { "target", target},
                 { "sinceTime", sinceTime}
             };
-
-            string response = await ServerRequest(postData);
+            
             try
             {
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml(response);
-                return doc;
+                string response = await ServerRequest(postData);
+                if (!string.IsNullOrWhiteSpace(response))
+                {
+                    XmlDocument doc = new XmlDocument();
+                    doc.LoadXml(response);
+                    return doc;
+                }
             }
             catch(XmlException e)
             {
@@ -93,11 +122,16 @@
         private static async Task<string> ServerRequest(Dictionary<string,string> postData)
         {
             FormUrlEncodedContent content = new FormUrlEncodedContent(postData);
-            HttpResponseMessage response = await client.PostAsync(Configurator.Address, content);
-            string responseString = await response.Content.ReadAsStringAsync();
-
-            MessageBox.Show(responseString);
-            return responseString;
+            try
+            {
+                HttpResponseMessage response = await client.PostAsync(Configurator.Address, content);
+                string responseString = await response.Content.ReadAsStringAsync();
+                return responseString;
+            }
+            catch(HttpRequestException e)
+            {
+                return string.Empty;
+            }
         }
     }
 }

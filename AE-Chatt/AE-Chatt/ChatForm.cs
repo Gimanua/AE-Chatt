@@ -6,6 +6,7 @@
     using System.Xml.Linq;
     using System;
     using System.Xml;
+    using System.IO;
 
     public partial class ChatForm : Form
     {
@@ -82,6 +83,7 @@
                     TimeSpan utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
                     string timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss" + ((utcOffset < TimeSpan.Zero) ? "-" : "+") + utcOffset.ToString("hh") + ":" + utcOffset.ToString("mm"));
                     AppendPendingMessage(Username, tabControlConversations.SelectedTab.Text, timestamp, currentSendTextBox.Text);
+                    AppendChatLog(Username, tabControlConversations.SelectedTab.Text, timestamp, currentSendTextBox.Text);
                     currentReadTextBox.AppendText(currentSendTextBox.Text + "\n");
                     currentSendTextBox.Clear();
                     currentSendTextBox.Select(0, 0);
@@ -94,8 +96,49 @@
             }
         }
 
+        private void AppendChatLog(string sender, string receiver, string timestamp, string message)
+        {
+            File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Normal);
+            XmlDocument doc = new XmlDocument();
+            doc.Load(Configurator.ChatLogPath);
+
+            XmlElement xmlElement = doc.CreateElement("message");
+            XmlAttribute xmlAttribute = doc.CreateAttribute("sender");
+            xmlAttribute.Value = sender;
+            xmlElement.Attributes.Append(xmlAttribute);
+            xmlAttribute = doc.CreateAttribute("receiver");
+            xmlAttribute.Value = receiver;
+            xmlElement.Attributes.Append(xmlAttribute);
+            xmlAttribute = doc.CreateAttribute("timestamp");
+            xmlAttribute.Value = timestamp;
+            xmlElement.Attributes.Append(xmlAttribute);
+            xmlElement.InnerText = message;
+
+            if (sender == Username)
+            {
+                if(doc.SelectSingleNode("/chat_log/" + receiver) == null)
+                {
+                    XmlElement tmp = doc.CreateElement(receiver);
+                    doc.SelectSingleNode("/chat_log").AppendChild(tmp);
+                }
+                doc.SelectSingleNode("/chat_log/" + receiver).AppendChild(xmlElement);
+            }
+            else
+            {
+                if(doc.SelectSingleNode("/chat_log/" + sender) == null)
+                {
+                    XmlElement tmp = doc.CreateElement(sender);
+                    doc.SelectSingleNode("/chat_log").AppendChild(tmp);
+                }
+                doc.SelectSingleNode("/chat_log/" + sender).AppendChild(xmlElement);
+            }
+            doc.Save(Configurator.ChatLogPath);
+            File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
+        }
+
         private void AppendPendingMessage(string sender, string receiver, string timestamp, string message)
         {
+            File.SetAttributes(Configurator.PendingMessagesPath, FileAttributes.Normal);
             XDocument doc = XDocument.Load("pending_messages.xml");
             XElement msg = new XElement("pending_message");
             msg.Add(new XAttribute("sender", sender));
@@ -104,6 +147,7 @@
             msg.Value = message;
             doc.Element("pending_messages").Add(msg);
             doc.Save("pending_messages.xml");
+            File.SetAttributes(Configurator.PendingMessagesPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
         }
 
         private void RemovePendingMessage()
@@ -116,13 +160,21 @@
             doc.Save("pending_messages.xml");
         }
 
+        private async void LoadUsers()
+        {
+
+        }
+
         private async void LoadChatLog(string target, string sinceTime)
         {
             XmlDocument doc = await ServerCommunicator.GetChatLog(Username, target, sinceTime);
-            XmlNodeList list = doc.SelectNodes("/chatlog/message");
-            foreach(XmlNode node in list)
+            if(doc != null)
             {
-                currentReadTextBox.AppendText(node.InnerText);
+                XmlNodeList list = doc.SelectNodes("/chatlog/message");
+                foreach (XmlNode node in list)
+                {
+                    currentReadTextBox.AppendText(node.InnerText);
+                }
             }
         }
     }

@@ -32,7 +32,6 @@
             }
             
             chatForm.FormClosed += (s, e) => { Close(); };
-            chatForm.Show();
         }
         
         private async void ButtonRegister_Click(object sender, EventArgs e)
@@ -73,6 +72,7 @@
                 {
                     if (await ServerCommunicator.Login(textBoxUserName.Text, textBoxPassWord.Text))
                     {
+                        chatForm.Username = textBoxUserName.Text;
                         chatForm.Show();
                         Hide();
                     }

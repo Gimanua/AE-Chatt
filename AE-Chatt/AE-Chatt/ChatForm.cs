@@ -7,16 +7,23 @@
     using System;
     using System.Xml;
     using System.IO;
+    using System.Timers;
 
     public partial class ChatForm : Form
     {
+        public LoginForm LoginForm { get; set; }
         private TextBox currentSendTextBox;
         private TextBox currentReadTextBox;
+        public System.Windows.Forms.Timer Timer { get; set; }
         public string Username { get; set; } = "Tölpen"; //tillfällig
 
         public ChatForm()
         {
             InitializeComponent();
+            Timer = new System.Windows.Forms.Timer();
+            Timer.Interval = 1000;
+            Timer.Enabled = false;
+            Timer.Tick += Tick;
         }
         
         private void ListViewOthers_ItemChecked(object sender, ItemCheckedEventArgs e)
@@ -39,10 +46,9 @@
                 currentSendTextBox = textBoxSend;
 
                 //Från en dag tillbaks
-                TimeSpan utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
-                string sinceTime = DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-ddTHH:mm:ss" + ((utcOffset < TimeSpan.Zero) ? "-" : "+") + utcOffset.ToString("hh") + ":" + utcOffset.ToString("mm"));
+                
 
-                LoadChatLog(e.Item.Text, sinceTime);
+                //LoadChatLog(e.Item.Text, sinceTime);
             }
             else
             {
@@ -81,13 +87,14 @@
                 if (!string.IsNullOrWhiteSpace(currentSendTextBox.Text))
                 {
                     TimeSpan utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
-                    string timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss" + ((utcOffset < TimeSpan.Zero) ? "-" : "+") + utcOffset.ToString("hh") + ":" + utcOffset.ToString("mm"));
+                    string timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
                     AppendPendingMessage(Username, tabControlConversations.SelectedTab.Text, timestamp, currentSendTextBox.Text);
                     AppendChatLog(Username, tabControlConversations.SelectedTab.Text, timestamp, currentSendTextBox.Text);
                     currentReadTextBox.AppendText(currentSendTextBox.Text + "\n");
+                    string msg = currentSendTextBox.Text;
                     currentSendTextBox.Clear();
                     currentSendTextBox.Select(0, 0);
-                    if(await ServerCommunicator.SendMessage(Username, tabControlConversations.SelectedTab.Text, timestamp, currentSendTextBox.Text))
+                    if (await ServerCommunicator.SendMessage(Username, tabControlConversations.SelectedTab.Text, timestamp, msg))
                     {
                         //Ta bort från pending_messages.xml
                         RemovePendingMessage();
@@ -152,17 +159,78 @@
 
         private void RemovePendingMessage()
         {
+            File.SetAttributes(Configurator.PendingMessagesPath, FileAttributes.Normal);
+            XmlDocument doc = new XmlDocument();
+            doc.Load(Configurator.PendingMessagesPath);
+            XmlNode messages = doc.SelectSingleNode("/pending_messages");
+            XmlNode childMessage = messages.FirstChild;
+            if(childMessage != null)
+            {
+                messages.RemoveChild(childMessage);
+            }
+            doc.Save(Configurator.PendingMessagesPath);
+            File.SetAttributes(Configurator.PendingMessagesPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
+        }
+
+        private async void Tick(object s, EventArgs e)
+        {
+            Timer.Stop();
+            LoadUsers();
+            //Ta bort pending_messages
+            File.SetAttributes(Configurator.PendingMessagesPath, FileAttributes.Normal);
             XmlDocument doc = new XmlDocument();
             doc.Load("pending_messages.xml");
             XmlNode messages = doc.SelectSingleNode("/pending_messages");
             XmlNode childMessage = messages.FirstChild;
-            messages.RemoveChild(childMessage);
-            doc.Save("pending_messages.xml");
+            doc = null;
+            if (childMessage != null && await ServerCommunicator.SendMessage(Username, childMessage.Attributes["receiver"].Value, childMessage.Attributes["timestamp"].Value, childMessage.InnerText))
+            {
+                RemovePendingMessage();
+            }
+            Timer.Start();
         }
 
         private async void LoadUsers()
         {
+            XmlDocument doc = await ServerCommunicator.GetUsers(Username);
+            if(doc != null)
+            {
+                XmlNodeList list = doc.SelectNodes("/users/user");
+                foreach(XmlNode node in list)
+                {
+                    bool alreadyThere = false;
+                    foreach(ListViewItem listViewItem in listViewOthers.Items)
+                    {
+                        if(listViewItem.Text == node.InnerText)
+                        {
+                            alreadyThere = true;
+                            break;
+                        }
+                    }
 
+                    if (!alreadyThere)
+                        listViewOthers.Items.Add(node.InnerText);
+                    
+                }
+                for(int i = 0; i < listViewOthers.Items.Count; i++)
+                {
+                    bool exists = false;
+                    foreach(XmlNode node in list)
+                    {
+                        if(listViewOthers.Items[i].Text == node.InnerText)
+                        {
+                            exists = true;
+                            break;
+                        }
+                    }
+
+                    if (!exists)
+                    {
+                        listViewOthers.Items.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }
         }
 
         private async void LoadChatLog(string target, string sinceTime)
@@ -176,6 +244,22 @@
                     currentReadTextBox.AppendText(node.InnerText);
                 }
             }
+        }
+        
+        private void ButtonLogOut_Click(object sender, EventArgs e)
+        {
+            Timer.Enabled = false;
+            Timer.Stop();
+            ServerCommunicator.Logout(Username);
+            Hide();
+            LoginForm.Show();
+        }
+
+        private void ChatForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Timer.Enabled = false;
+            Timer.Stop();
+            ServerCommunicator.Logout(Username);
         }
     }
 }

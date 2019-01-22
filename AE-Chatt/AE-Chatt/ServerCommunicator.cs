@@ -12,6 +12,23 @@
         private static readonly HttpClient client = new HttpClient();
         public static bool Communicating { get; set; } = false;
         
+        public static async Task<bool> Logout(string username)
+        {
+            Dictionary<string, string> postData = new Dictionary<string, string>
+            {
+                { "intent", "logout"},
+                { "username", username }
+            };
+
+            string response = await ServerRequest(postData);
+            if (response.Contains("SUCCESS"))
+                return true;
+            else
+                MessageBox.Show(response, "Server respons", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            return false;
+        }
+
         public static async Task<bool> Login(string username, string password)
         {
             Dictionary<string,string> postData = new Dictionary<string, string>

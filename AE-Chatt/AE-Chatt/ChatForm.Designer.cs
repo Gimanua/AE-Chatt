@@ -28,11 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Göran");
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Pelle");
             this.listViewOthers = new System.Windows.Forms.ListView();
             this.textBoxServerStatus = new System.Windows.Forms.TextBox();
             this.tabControlConversations = new System.Windows.Forms.TabControl();
+            this.buttonLogOut = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listViewOthers
@@ -40,15 +39,10 @@
             this.listViewOthers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.listViewOthers.CheckBoxes = true;
-            listViewItem1.StateImageIndex = 0;
-            listViewItem2.StateImageIndex = 0;
-            this.listViewOthers.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2});
-            this.listViewOthers.Location = new System.Drawing.Point(12, 58);
+            this.listViewOthers.Location = new System.Drawing.Point(12, 114);
             this.listViewOthers.MultiSelect = false;
             this.listViewOthers.Name = "listViewOthers";
-            this.listViewOthers.Size = new System.Drawing.Size(121, 380);
+            this.listViewOthers.Size = new System.Drawing.Size(121, 324);
             this.listViewOthers.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listViewOthers.TabIndex = 1;
             this.listViewOthers.UseCompatibleStateImageBehavior = false;
@@ -79,16 +73,28 @@
             this.tabControlConversations.TabIndex = 4;
             this.tabControlConversations.Selected += new System.Windows.Forms.TabControlEventHandler(this.TabControlConversations_Selected);
             // 
+            // buttonLogOut
+            // 
+            this.buttonLogOut.Location = new System.Drawing.Point(12, 58);
+            this.buttonLogOut.Name = "buttonLogOut";
+            this.buttonLogOut.Size = new System.Drawing.Size(121, 50);
+            this.buttonLogOut.TabIndex = 5;
+            this.buttonLogOut.Text = "Logga Ut";
+            this.buttonLogOut.UseVisualStyleBackColor = true;
+            this.buttonLogOut.Click += new System.EventHandler(this.ButtonLogOut_Click);
+            // 
             // ChatForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.buttonLogOut);
             this.Controls.Add(this.tabControlConversations);
             this.Controls.Add(this.textBoxServerStatus);
             this.Controls.Add(this.listViewOthers);
             this.Name = "ChatForm";
             this.Text = "AE Chatt";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ChatForm_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -98,5 +104,6 @@
         private System.Windows.Forms.ListView listViewOthers;
         private System.Windows.Forms.TextBox textBoxServerStatus;
         private System.Windows.Forms.TabControl tabControlConversations;
+        private System.Windows.Forms.Button buttonLogOut;
     }
 }

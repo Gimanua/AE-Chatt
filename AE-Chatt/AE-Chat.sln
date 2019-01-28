@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AE-Chat", "AE-Chatt\AE-Chat.csproj", "{19E3D703-A1B2-469E-B305-BA9678D0545C}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{9A627E75-8D50-449D-89B4-6F8EF03B4200}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,12 +27,6 @@ Global
 		{19E3D703-A1B2-469E-B305-BA9678D0545C}.Release|x64.Build.0 = Release|Any CPU
 		{19E3D703-A1B2-469E-B305-BA9678D0545C}.Release|x86.ActiveCfg = Release|Any CPU
 		{19E3D703-A1B2-469E-B305-BA9678D0545C}.Release|x86.Build.0 = Release|Any CPU
-		{9A627E75-8D50-449D-89B4-6F8EF03B4200}.Debug|Any CPU.ActiveCfg = Debug
-		{9A627E75-8D50-449D-89B4-6F8EF03B4200}.Debug|x64.ActiveCfg = Debug
-		{9A627E75-8D50-449D-89B4-6F8EF03B4200}.Debug|x86.ActiveCfg = Debug
-		{9A627E75-8D50-449D-89B4-6F8EF03B4200}.Release|Any CPU.ActiveCfg = Release
-		{9A627E75-8D50-449D-89B4-6F8EF03B4200}.Release|x64.ActiveCfg = Release
-		{9A627E75-8D50-449D-89B4-6F8EF03B4200}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -86,7 +86,6 @@
                 e.SuppressKeyPress = true;
                 if (!string.IsNullOrWhiteSpace(currentSendTextBox.Text))
                 {
-                    TimeSpan utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
                     string timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
                     AppendPendingMessage(Username, tabControlConversations.SelectedTab.Text, timestamp, currentSendTextBox.Text);
                     AppendChatLog(Username, tabControlConversations.SelectedTab.Text, timestamp, currentSendTextBox.Text);
@@ -176,6 +175,11 @@
         {
             Timer.Stop();
             LoadUsers();
+            if(tabControlConversations.SelectedTab != null)
+            {
+                string timestamp = DateTime.UtcNow.AddSeconds(-5).ToString("yyyy-MM-dd HH:mm:ss");
+                LoadChatLog(tabControlConversations.SelectedTab.Text, timestamp);
+            }
             //Ta bort pending_messages
             File.SetAttributes(Configurator.PendingMessagesPath, FileAttributes.Normal);
             XmlDocument doc = new XmlDocument();
@@ -241,7 +245,7 @@
                 XmlNodeList list = doc.SelectNodes("/chatlog/message");
                 foreach (XmlNode node in list)
                 {
-                    currentReadTextBox.AppendText(node.InnerText);
+                    currentReadTextBox.AppendText(node.InnerText + "\n");
                 }
             }
         }

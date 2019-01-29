@@ -44,11 +44,11 @@
 
                 currentReadTextBox = textBoxRead;
                 currentSendTextBox = textBoxSend;
-
-                //Från en dag tillbaks
                 
 
-                //LoadChatLog(e.Item.Text, sinceTime);
+                //Från en dag tillbaks
+                string timestamp = DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-dd HH:mm:ss");
+                LoadChatLog(e.Item.Text, timestamp);
             }
             else
             {
@@ -111,9 +111,6 @@
             XmlElement xmlElement = doc.CreateElement("message");
             XmlAttribute xmlAttribute = doc.CreateAttribute("sender");
             xmlAttribute.Value = sender;
-            xmlElement.Attributes.Append(xmlAttribute);
-            xmlAttribute = doc.CreateAttribute("receiver");
-            xmlAttribute.Value = receiver;
             xmlElement.Attributes.Append(xmlAttribute);
             xmlAttribute = doc.CreateAttribute("timestamp");
             xmlAttribute.Value = timestamp;
@@ -179,8 +176,10 @@
             {
                 //Hämta timestamp
                 string timestamp = LoadTimestamp(tabControlConversations.SelectedTab.Text);
-                if (!string.IsNullOrWhiteSpace(timestamp))
-                    LoadChatLog(tabControlConversations.SelectedTab.Text, timestamp);
+                if (string.IsNullOrWhiteSpace(timestamp))
+                    timestamp = DateTime.UtcNow.AddSeconds(-30).ToString("yyyy-MM-dd HH:mm:ss");
+
+                LoadChatLog(tabControlConversations.SelectedTab.Text, timestamp);
             }
             //Ta bort pending_messages
             File.SetAttributes(Configurator.PendingMessagesPath, FileAttributes.Normal);
@@ -201,10 +200,9 @@
             File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Normal);
             XmlDocument doc = new XmlDocument();
             doc.Load(Configurator.ChatLogPath);
-            XmlNode latestMessage = doc.SelectSingleNode("/chat_log/" + target);
-            if(latestMessage == null)
+            XmlNode latestMessage = doc.SelectSingleNode("/chat_log/" + target).LastChild;
+            if (latestMessage == null)
                 return string.Empty;
-            latestMessage = doc.SelectSingleNode("/chat_log/" + target).LastChild;
             string timestamp = latestMessage.Attributes["timestamp"].Value;
             File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
             return timestamp;
@@ -261,7 +259,29 @@
                 XmlNodeList list = doc.SelectNodes("/chatlog/message");
                 foreach (XmlNode node in list)
                 {
-                    currentReadTextBox.AppendText(target + "> " + node.InnerText + "\n");
+                    if(node.Attributes["sender"].Value == Username)
+                        currentReadTextBox.AppendText(Username + "> " + node.InnerText + "\n");
+                    else
+                        currentReadTextBox.AppendText(target + "> " + node.InnerText + "\n");
+
+                    File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Normal);
+                    XmlDocument logDoc = new XmlDocument();
+                    logDoc.Load(Configurator.ChatLogPath);
+
+                    XmlNode copiedNode = logDoc.CreateElement(node.Name);
+                    foreach(XmlAttribute attribute in node.Attributes)
+                    {
+                        XmlAttribute copiedAttribute = logDoc.CreateAttribute(attribute.Name);
+                        copiedAttribute.Value = attribute.Value;
+                        copiedNode.Attributes.Append(copiedAttribute);
+                    }
+                    copiedNode.InnerText = node.InnerText;
+                    
+                    XmlNode targetNode = logDoc.SelectSingleNode("chat_log/" + target);
+                    targetNode.AppendChild(copiedNode);
+
+                    logDoc.Save(Configurator.ChatLogPath);
+                    File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
                 }
             }
         }
@@ -280,6 +300,8 @@
             Timer.Enabled = false;
             Timer.Stop();
             await ServerCommunicator.Logout(Username);
+            File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
+            File.SetAttributes(Configurator.PendingMessagesPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
         }
     }
 }

@@ -179,7 +179,8 @@
             {
                 //Hämta timestamp
                 string timestamp = LoadTimestamp(tabControlConversations.SelectedTab.Text);
-                LoadChatLog(tabControlConversations.SelectedTab.Text, timestamp);
+                if (!string.IsNullOrWhiteSpace(timestamp))
+                    LoadChatLog(tabControlConversations.SelectedTab.Text, timestamp);
             }
             //Ta bort pending_messages
             File.SetAttributes(Configurator.PendingMessagesPath, FileAttributes.Normal);
@@ -200,7 +201,10 @@
             File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Normal);
             XmlDocument doc = new XmlDocument();
             doc.Load(Configurator.ChatLogPath);
-            XmlNode latestMessage = doc.SelectSingleNode("/chat_log/" + target).LastChild;
+            XmlNode latestMessage = doc.SelectSingleNode("/chat_log/" + target);
+            if(latestMessage == null)
+                return string.Empty;
+            latestMessage = doc.SelectSingleNode("/chat_log/" + target).LastChild;
             string timestamp = latestMessage.Attributes["timestamp"].Value;
             File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
             return timestamp;

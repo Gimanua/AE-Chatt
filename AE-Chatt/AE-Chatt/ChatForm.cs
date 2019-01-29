@@ -89,7 +89,7 @@
                     string timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
                     AppendPendingMessage(Username, tabControlConversations.SelectedTab.Text, timestamp, currentSendTextBox.Text);
                     AppendChatLog(Username, tabControlConversations.SelectedTab.Text, timestamp, currentSendTextBox.Text);
-                    currentReadTextBox.AppendText(currentSendTextBox.Text + "\n");
+                    currentReadTextBox.AppendText(Username + "> " + currentSendTextBox.Text + "\n");
                     string msg = currentSendTextBox.Text;
                     currentSendTextBox.Clear();
                     currentSendTextBox.Select(0, 0);
@@ -177,7 +177,8 @@
             LoadUsers();
             if(tabControlConversations.SelectedTab != null)
             {
-                string timestamp = DateTime.UtcNow.AddSeconds(-5).ToString("yyyy-MM-dd HH:mm:ss");
+                //Hämta timestamp
+                string timestamp = LoadTimestamp(tabControlConversations.SelectedTab.Text);
                 LoadChatLog(tabControlConversations.SelectedTab.Text, timestamp);
             }
             //Ta bort pending_messages
@@ -192,6 +193,17 @@
                 RemovePendingMessage();
             }
             Timer.Start();
+        }
+
+        private string LoadTimestamp(string target)
+        {
+            File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Normal);
+            XmlDocument doc = new XmlDocument();
+            doc.Load(Configurator.ChatLogPath);
+            XmlNode latestMessage = doc.SelectSingleNode("/chat_log/" + target).LastChild;
+            string timestamp = latestMessage.Attributes["timestamp"].Value;
+            File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
+            return timestamp;
         }
 
         private async void LoadUsers()
@@ -245,7 +257,7 @@
                 XmlNodeList list = doc.SelectNodes("/chatlog/message");
                 foreach (XmlNode node in list)
                 {
-                    currentReadTextBox.AppendText(node.InnerText + "\n");
+                    currentReadTextBox.AppendText(target + "> " + node.InnerText + "\n");
                 }
             }
         }
@@ -259,11 +271,11 @@
             LoginForm.Show();
         }
 
-        private void ChatForm_FormClosed(object sender, FormClosedEventArgs e)
+        private async void ChatForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             Timer.Enabled = false;
             Timer.Stop();
-            ServerCommunicator.Logout(Username);
+            await ServerCommunicator.Logout(Username);
         }
     }
 }

@@ -93,10 +93,15 @@
                     string msg = currentSendTextBox.Text;
                     currentSendTextBox.Clear();
                     currentSendTextBox.Select(0, 0);
-                    if (await ServerCommunicator.SendMessage(Username, tabControlConversations.SelectedTab.Text, timestamp, msg))
+                    if (!ServerCommunicator.Communicating)
                     {
-                        //Ta bort från pending_messages.xml
-                        RemovePendingMessage();
+                        ServerCommunicator.Communicating = true;
+                        if (await ServerCommunicator.SendMessage(Username, tabControlConversations.SelectedTab.Text, timestamp, msg))
+                        {
+                            //Ta bort från pending_messages.xml
+                            RemovePendingMessage();
+                        }
+                        ServerCommunicator.Communicating = false;
                     }
                 }
             }
@@ -182,15 +187,21 @@
                 LoadChatLog(tabControlConversations.SelectedTab.Text, timestamp);
             }
             //Ta bort pending_messages
-            File.SetAttributes(Configurator.PendingMessagesPath, FileAttributes.Normal);
-            XmlDocument doc = new XmlDocument();
-            doc.Load("pending_messages.xml");
-            XmlNode messages = doc.SelectSingleNode("/pending_messages");
-            XmlNode childMessage = messages.FirstChild;
-            doc = null;
-            if (childMessage != null && await ServerCommunicator.SendMessage(Username, childMessage.Attributes["receiver"].Value, childMessage.Attributes["timestamp"].Value, childMessage.InnerText))
+            if (!ServerCommunicator.Communicating)
             {
-                RemovePendingMessage();
+                ServerCommunicator.Communicating = true;
+                File.SetAttributes(Configurator.PendingMessagesPath, FileAttributes.Normal);
+                XmlDocument doc = new XmlDocument();
+                doc.Load("pending_messages.xml");
+                XmlNode messages = doc.SelectSingleNode("/pending_messages");
+                XmlNode childMessage = messages.FirstChild;
+                doc = null;
+
+                if (childMessage != null && await ServerCommunicator.SendMessage(Username, childMessage.Attributes["receiver"].Value, childMessage.Attributes["timestamp"].Value, childMessage.InnerText))
+                {
+                    RemovePendingMessage();
+                }
+                ServerCommunicator.Communicating = false;
             }
             Timer.Start();
         }

@@ -48,7 +48,7 @@
 
                 //Från en dag tillbaks
                 string timestamp = DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-dd HH:mm:ss");
-                LoadChatLog(e.Item.Text, timestamp);
+                LoadChatLog(e.Item.Text, timestamp, false);
             }
             else
             {
@@ -261,39 +261,66 @@
                 }
             }
         }
-
-        private async void LoadChatLog(string target, string sinceTime)
+        
+        private async void LoadChatLog(string target, string sinceTime, bool remote = true)
         {
-            XmlDocument doc = await ServerCommunicator.GetChatLog(Username, target, sinceTime);
-            if(doc != null)
+            if (remote)
             {
-                XmlNodeList list = doc.SelectNodes("/chatlog/message");
-                foreach (XmlNode node in list)
+                XmlDocument doc = await ServerCommunicator.GetChatLog(Username, target, sinceTime);
+                if (doc != null)
                 {
-                    if(node.Attributes["sender"].Value == Username)
-                        currentReadTextBox.AppendText(Username + "> " + node.InnerText + "\n");
-                    else
-                        currentReadTextBox.AppendText(target + "> " + node.InnerText + "\n");
-
-                    File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Normal);
-                    XmlDocument logDoc = new XmlDocument();
-                    logDoc.Load(Configurator.ChatLogPath);
-
-                    XmlNode copiedNode = logDoc.CreateElement(node.Name);
-                    foreach(XmlAttribute attribute in node.Attributes)
+                    XmlNodeList list = doc.SelectNodes("/chatlog/message");
+                    foreach (XmlNode node in list)
                     {
-                        XmlAttribute copiedAttribute = logDoc.CreateAttribute(attribute.Name);
-                        copiedAttribute.Value = attribute.Value;
-                        copiedNode.Attributes.Append(copiedAttribute);
-                    }
-                    copiedNode.InnerText = node.InnerText;
-                    
-                    XmlNode targetNode = logDoc.SelectSingleNode("chat_log/" + target);
-                    targetNode.AppendChild(copiedNode);
+                        if (node.Attributes["sender"].Value == Username)
+                            currentReadTextBox.AppendText(Username + "> " + node.InnerText + "\n");
+                        else
+                            currentReadTextBox.AppendText(target + "> " + node.InnerText + "\n");
 
-                    logDoc.Save(Configurator.ChatLogPath);
-                    File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
+                        File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Normal);
+                        XmlDocument logDoc = new XmlDocument();
+                        logDoc.Load(Configurator.ChatLogPath);
+
+                        XmlNode copiedNode = logDoc.CreateElement(node.Name);
+                        foreach (XmlAttribute attribute in node.Attributes)
+                        {
+                            XmlAttribute copiedAttribute = logDoc.CreateAttribute(attribute.Name);
+                            copiedAttribute.Value = attribute.Value;
+                            copiedNode.Attributes.Append(copiedAttribute);
+                        }
+                        copiedNode.InnerText = node.InnerText;
+
+                        XmlNode targetNode = logDoc.SelectSingleNode("chat_log/" + target);
+                        targetNode.AppendChild(copiedNode);
+
+                        logDoc.Save(Configurator.ChatLogPath);
+                        File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
+                    }
                 }
+            }
+            else
+            {
+                File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Normal);
+                XmlDocument doc = new XmlDocument();
+                doc.Load(Configurator.ChatLogPath);
+                XmlNodeList nodeList = doc.SelectNodes("/chat_log/message");
+                if(nodeList != null)
+                {
+                    DateTime sinceDate = DateTime.Parse(sinceTime);
+                    foreach(XmlNode node in nodeList)
+                    {
+                        XmlAttribute timestamp = node.Attributes["timestamp"];
+                        DateTime nodeTime = DateTime.Parse(timestamp.Value);
+                        if(nodeTime > sinceDate)
+                        {
+                            if (node.Attributes["sender"].Value == Username)
+                                currentReadTextBox.AppendText(Username + "> " + node.InnerText + "\n");
+                            else
+                                currentReadTextBox.AppendText(target + "> " + node.InnerText + "\n");
+                        }
+                    }
+                }
+                File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
             }
         }
         

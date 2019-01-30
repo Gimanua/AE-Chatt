@@ -15,7 +15,7 @@
         private TextBox currentSendTextBox;
         private TextBox currentReadTextBox;
         public System.Windows.Forms.Timer Timer { get; set; }
-        public string Username { get; set; } = "Tölpen"; //tillfällig
+        public string Username { get; set; }
 
         public ChatForm()
         {
@@ -176,6 +176,16 @@
         private async void Tick(object s, EventArgs e)
         {
             Timer.Stop();
+            if (await ServerCommunicator.CheckConnection(Username))
+            {
+                textBoxServerStatus.BackColor = Color.DarkOliveGreen;
+                textBoxServerStatus.Text = "Connected";
+            }
+            else
+            {
+                textBoxServerStatus.BackColor = Color.DarkRed;
+                textBoxServerStatus.Text = "Disconnected";
+            }
             LoadUsers();
             if(tabControlConversations.SelectedTab != null)
             {

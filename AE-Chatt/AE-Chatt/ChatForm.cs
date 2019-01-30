@@ -221,9 +221,10 @@
             File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Normal);
             XmlDocument doc = new XmlDocument();
             doc.Load(Configurator.ChatLogPath);
-            XmlNode latestMessage = doc.SelectSingleNode("/chat_log/" + target).LastChild;
+            XmlNode latestMessage = doc.SelectSingleNode("/chat_log/" + target);
             if (latestMessage == null)
                 return string.Empty;
+            latestMessage = latestMessage.LastChild;
             string timestamp = latestMessage.Attributes["timestamp"].Value;
             File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Hidden | FileAttributes.ReadOnly);
             return timestamp;
@@ -313,7 +314,7 @@
                 File.SetAttributes(Configurator.ChatLogPath, FileAttributes.Normal);
                 XmlDocument doc = new XmlDocument();
                 doc.Load(Configurator.ChatLogPath);
-                XmlNodeList nodeList = doc.SelectNodes("/chat_log/message");
+                XmlNodeList nodeList = doc.SelectNodes("/chat_log/" + target + "/message");
                 if(nodeList != null)
                 {
                     DateTime sinceDate = DateTime.Parse(sinceTime);

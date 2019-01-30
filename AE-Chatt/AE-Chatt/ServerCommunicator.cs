@@ -29,6 +29,19 @@
             return false;
         }
 
+        public static async Task<bool> CheckConnection(string username)
+        {
+            Dictionary<string, string> postData = new Dictionary<string, string>
+            {
+                { "intent", "checkConnection"},
+                {"username", username }
+            };
+            string response = await ServerRequest(postData);
+            if (response.Contains("SUCCESS"))
+                return true;
+            return false;
+        }
+
         public static async Task<bool> Login(string username, string password)
         {
             Dictionary<string,string> postData = new Dictionary<string, string>

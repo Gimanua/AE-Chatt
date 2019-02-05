@@ -19,7 +19,7 @@
                 using (XmlWriter writer = XmlWriter.Create(ConfigPath, settings))
                 {
                     writer.WriteStartElement("configuration");
-                    writer.WriteElementString("address", "http://10.110.226.181/AEChatt/AE.php");
+                    writer.WriteElementString("address", "https://10.20.20.110/AE.php");
                     writer.WriteEndElement();
                 }
             }
